@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/accounts")
 @AllArgsConstructor
 public class AccountsController {
-    AccountsService accountsService;
+    private AccountsService accountsService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerAccount(@RequestBody Account account) {

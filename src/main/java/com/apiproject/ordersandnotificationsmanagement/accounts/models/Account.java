@@ -15,15 +15,15 @@ public class Account {
 
 /**
  {
- "balance": 200,
- "customerInfo": {
- "name": "youssef",
- "email": "youssef@mail.com",
- "phone": "1234"
- },
- "accountCredentials": {
- "username": "youssef1",
- "password": "admin"
- }
+     "balance": 200,
+     "customerInfo": {
+         "name": "youssef",
+         "email": "youssef@mail.com",
+         "phone": "1234"
+     },
+     "accountCredentials": {
+         "username": "youssef1",
+         "password": "admin"
+     }
  }
  */

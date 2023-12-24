@@ -23,11 +23,4 @@ public class AccountsService {
         }
         return account;
     }
-    public boolean deleteAccount(String username) { // Not needed in the project
-        if (!accountsRepo.isAccountExists(username)) {
-            return false;
-        }
-        accountsRepo.deleteAccount(username);
-        return true;
-    }
 }

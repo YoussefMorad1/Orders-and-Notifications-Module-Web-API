@@ -17,10 +17,6 @@ public class AccountsRepo {
         accounts.add(account);
     }
 
-    public void deleteAccount(String username) {
-        accounts.removeIf(account -> account.getAccountCredentials().getUsername().equals(username));
-    }
-
     public Account getAccount(String username) {
         for (Account account : accounts) {
             if (account.getAccountCredentials().getUsername().equals(username)) {
