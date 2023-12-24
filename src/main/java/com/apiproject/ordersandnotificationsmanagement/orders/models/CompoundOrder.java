@@ -4,12 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 @Getter
 @Setter
 public class CompoundOrder extends Order{
-    private ArrayList<SimpleOrder> simpleOrders;
     private String commonLocation;
-    public CompoundOrder(String orderID, double shippingFee, boolean isShipping, String setTime) {
+    private ArrayList<SimpleOrder> simpleOrders;
+    public CompoundOrder(String orderID, double shippingFee, boolean isShipping, Date setTime,
+                         String commonLocation, ArrayList<SimpleOrder> simpleOrders) {
         super(orderID, shippingFee, isShipping, setTime);
+        this.commonLocation = commonLocation;
+        this.simpleOrders = simpleOrders;
+    }
+
+    @Override
+    public ArrayList<SimpleOrder> getOrderAsList() {
+        return new ArrayList<>(simpleOrders);
     }
 }

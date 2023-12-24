@@ -17,20 +17,26 @@ public class OrdersController {
 
     @PostMapping("/place")
     public ResponseEntity<String> placeOrder(@RequestBody Order order) {
-        ordersService.placeOrder(order);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Order is placed successfully");
-    }
-
-    @PostMapping("/ship")
-    public ResponseEntity<String> shipOrder(@RequestBody Order order) {
-        if (ordersService.shipOrder(order)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Order is shipped successfully");
+        if (ordersService.placeOrder(order)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order is placed successfully");
         } else {
-            return ResponseEntity.badRequest().body("Place order first");
+            return ResponseEntity.badRequest().body("Order with this ID already exists");
         }
     }
 
-    @GetMapping("/order/{orderID}")
+    @PostMapping("/ship/{orderID}")
+    public ResponseEntity<String> shipOrder(@PathVariable String orderID) {
+        Order order = ordersService.getOrder(orderID);
+        if (order == null) {
+            return ResponseEntity.badRequest().body("order not found");
+        } else if (ordersService.shipOrder(orderID)) {
+            return ResponseEntity.ok("Order is shipped successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Order is already shipped");
+        }
+    }
+
+    @GetMapping("/get/{orderID}")
     public ResponseEntity<?> getOrderInfo(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID);
         if (order == null) {
@@ -38,7 +44,32 @@ public class OrdersController {
         } else {
             return ResponseEntity.ok(order);
         }
-
-
     }
+
+    @DeleteMapping("/cancel/{orderID}")
+    public ResponseEntity<String> cancelOrder(@PathVariable String orderID) {
+        Order order = ordersService.getOrder(orderID);
+        if (order == null) {
+            return ResponseEntity.badRequest().body("order not found");
+        } else if (ordersService.cancelOrder(orderID)) {
+            return ResponseEntity.ok("Order is canceled successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Order is already shipped");
+        }
+    }
+
+    @PutMapping("/cancelShipping/{orderID}")
+    public ResponseEntity<String> cancelShipping(@PathVariable String orderID) {
+        Order order = ordersService.getOrder(orderID);
+        if (order == null) {
+            return ResponseEntity.badRequest().body("order not found");
+        } else if (!order.isShipping()) {
+            return ResponseEntity.badRequest().body("Order is not shipped yet");
+        } else if (ordersService.cancelShipping(orderID)) {
+            return ResponseEntity.ok("Order shipping is canceled successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Order shipping time is expired (only 24 hours allowed)");
+        }
+    }
+
 }

@@ -4,16 +4,14 @@ import com.apiproject.ordersandnotificationsmanagement.orders.models.Order;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-@Repository
-public class OrderRepos {
-    private final ArrayList<Order>orders;
 
-    public OrderRepos() {
+@Repository
+public class OrderRepo {
+    private final ArrayList<Order> orders;
+    public OrderRepo() {
         orders = new ArrayList<>();
     }
-
     public void addOrder(Order order) {
-
         orders.add(order);
     }
     public Order getOrder(String id) {
@@ -24,23 +22,15 @@ public class OrderRepos {
         }
         return null;
     }
-    public void cancelOrder(Order order){
-
+    public void removeOrder(Order order) {
         orders.remove(order);
     }
-    public boolean isPlacingOrder(String id){
-        for (Order order : orders) {
-            if (order.getOrderID().equals(id)) {
-                return true;
-            }
+    public void setOrderShippingStatus(String id, boolean status) {
+        Order order = getOrder(id);
+        if (order == null) {
+            throw new IllegalArgumentException("Order not found");
         }
-        return false;
+        order.setShipping(status);
     }
-
-   /* public void deductBalance(Order order, Account account){
-        account.setBalance(order);
-    }*/
-
-
 }
 
