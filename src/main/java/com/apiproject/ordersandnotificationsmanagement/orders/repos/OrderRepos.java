@@ -1,8 +1,8 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.repos;
 
-import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.Order;
 import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 @Repository
 public class OrderRepos {
@@ -11,7 +11,6 @@ public class OrderRepos {
     public OrderRepos() {
         orders = new ArrayList<>();
     }
-
 
     public void addOrder(Order order) {
 
@@ -25,11 +24,23 @@ public class OrderRepos {
         }
         return null;
     }
-    public void cancleOrder(Order order){
+    public void cancelOrder(Order order){
+
         orders.remove(order);
     }
+    public boolean isPlacingOrder(String id){
+        for (Order order : orders) {
+            if (order.getOrderID().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    //deduct
+   /* public void deductBalance(Order order, Account account){
+        account.setBalance(order);
+    }*/
 
 
 }
+
