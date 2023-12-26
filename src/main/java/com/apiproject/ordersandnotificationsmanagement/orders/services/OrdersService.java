@@ -31,6 +31,7 @@ public class OrdersService {
     private final long maxDurationToCancelShipping = 1000 * 60 * 60 * 24L;
     private final double shippingFeeFactor = 0.1;
     private static int curOrderID = 0;
+
     OrdersService(OrderRepo orderRepo, ProductsService productsService, AccountsRepo accountsService) {
         this.orderRepo = orderRepo;
         this.productsService = productsService;
@@ -156,12 +157,18 @@ public class OrdersService {
     }
 
     public Order getOrderFromOrderInput(OrderInput orderInput) {
-        // TODO: CLEAN THIS MESS
         Order order;
+        ArrayList<SimpleOrderInput> simpleOrders = new ArrayList<>();
 
         if (orderInput instanceof SimpleOrderInput) {
-            SimpleOrderInput simpleOrderInput = (SimpleOrderInput) orderInput;
+            simpleOrders.add((SimpleOrderInput) orderInput);
+        } else {
+            simpleOrders = ((CompoundOrderInput) orderInput).getOrders();
+        }
 
+        ArrayList<SimpleOrder> simpleOrdersList = new ArrayList<>();
+        double maxShippingFeeOfSimpleOrders = 0;
+        for (SimpleOrderInput simpleOrderInput : simpleOrders) {
             // Getting List of ProductItems from Product IDs
             ArrayList<String> productsIDs = simpleOrderInput.getProductsIDs();
             ArrayList<ProductItem> products = getProductItemsFromProductIDs(productsIDs);
@@ -178,38 +185,18 @@ public class OrdersService {
             }
 
             curOrderID++;
-            order = new SimpleOrder(String.valueOf(curOrderID), totalPrice * shippingFeeFactor,
-                    false, new Date(), simpleOrderInput.getLocation(), totalPrice, account, products);
+            maxShippingFeeOfSimpleOrders = Math.max(maxShippingFeeOfSimpleOrders, totalPrice * shippingFeeFactor);
+            simpleOrdersList.add(new SimpleOrder(String.valueOf(curOrderID), totalPrice * shippingFeeFactor,
+                    false, new Date(), simpleOrderInput.getLocation(), totalPrice, account, products));
+        }
+
+        if (orderInput instanceof SimpleOrderInput) {
+            order = simpleOrdersList.get(0);
         } else {
-            CompoundOrderInput compoundOrderInput = (CompoundOrderInput) orderInput;
-            String commonLocation = compoundOrderInput.getCommonLocation();
-            ArrayList<SimpleOrderInput> simpleOrders = compoundOrderInput.getOrders();
-            ArrayList<SimpleOrder> simpleOrdersList = new ArrayList<>();
-            double maxShippingFeeOfSimpleOrders = 0;
-            for (SimpleOrderInput simpleOrderInput : simpleOrders) {
-                // Getting List of ProductItems from Product IDs
-                ArrayList<String> productsIDs = simpleOrderInput.getProductsIDs();
-                ArrayList<ProductItem> products = getProductItemsFromProductIDs(productsIDs);
-                if (products == null) {
-                    return null;
-                }
-                double totalPrice = calculateTotalPrice(products);
-
-                // Getting Account from Account ID
-                String username = simpleOrderInput.getUserName();
-                Account account = accountsService.getAccount(username);
-                if (account == null) {
-                    return null;
-                }
-
-                curOrderID++;
-                maxShippingFeeOfSimpleOrders = Math.max(maxShippingFeeOfSimpleOrders, totalPrice * shippingFeeFactor);
-                simpleOrdersList.add(new SimpleOrder(String.valueOf(curOrderID), totalPrice * shippingFeeFactor,
-                        false, new Date(), simpleOrderInput.getLocation(), totalPrice, account, products));
-            }
-
             curOrderID++;
-            order = new CompoundOrder(String.valueOf(curOrderID), maxShippingFeeOfSimpleOrders, false, new Date(), commonLocation, simpleOrdersList);
+            String commonLocation = ((CompoundOrderInput) orderInput).getCommonLocation();
+            order = new CompoundOrder(String.valueOf(curOrderID), maxShippingFeeOfSimpleOrders,
+                    false, new Date(), commonLocation, simpleOrdersList);
         }
         return order;
     }

@@ -1,30 +1,25 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.models.inputs;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Map;
-
 @Getter
 @Setter
 @AllArgsConstructor
 public class CompoundOrderInput extends OrderInput{
     String commonLocation;
     ArrayList<SimpleOrderInput> orders;
-
-//    @Override
-//    public Map.Entry<String, ArrayList<SimpleOrderInput>> getOrderInputWithCommonLocation() {
-//        return new AbstractMap.SimpleEntry<>(commonLocation, orders);
-//    }
 }
 /**
  {
+    "type": "compound",
     "commonLocation": "dokki",
     "orders": [
         {
+            "type": "simple",
             "userName": "youssef1",
             "location": "dokki1",
             "productsIDs": [
@@ -33,6 +28,7 @@ public class CompoundOrderInput extends OrderInput{
             ]
         },
         {
+           "type": "simple",
             "userName": "youssef2",
             "location": "dokki2",
             "productsIDs": [
