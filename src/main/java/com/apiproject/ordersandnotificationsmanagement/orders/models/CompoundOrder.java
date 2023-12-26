@@ -1,5 +1,6 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,7 @@ public class CompoundOrder extends Order{
         this.commonLocation = commonLocation;
         this.simpleOrders = simpleOrders;
     }
-
+    @JsonIgnore
     @Override
     public ArrayList<SimpleOrder> getOrderAsList() {
         return new ArrayList<>(simpleOrders);

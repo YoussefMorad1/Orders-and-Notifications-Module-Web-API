@@ -1,6 +1,8 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.models;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,11 +10,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
-
 @Getter
 @Setter
 @AllArgsConstructor
-
 public abstract class Order {
     protected String orderID;
     protected double shippingFee;

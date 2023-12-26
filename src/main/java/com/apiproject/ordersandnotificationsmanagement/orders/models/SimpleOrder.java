@@ -4,6 +4,7 @@ import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
 import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,6 @@ public class SimpleOrder extends Order {
     private double totalPrice;
     private Account account;
     private ArrayList<ProductItem> products;
-
     public SimpleOrder(String orderID, double shippingFee, boolean isShipping, Date setTime,
                        String location, double totalPrice, Account account, ArrayList<ProductItem> products) {
         super(orderID, shippingFee, isShipping, setTime);
@@ -26,7 +26,7 @@ public class SimpleOrder extends Order {
         this.account = account;
         this.products = products;
     }
-
+    @JsonIgnore
     @Override
     public ArrayList<SimpleOrder> getOrderAsList() {
         ArrayList<SimpleOrder> orders = new ArrayList<>();

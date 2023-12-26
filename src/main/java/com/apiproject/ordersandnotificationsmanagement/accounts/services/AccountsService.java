@@ -23,4 +23,7 @@ public class AccountsService {
         }
         return account;
     }
+    public Account getAccount(String username) {
+        return accountsRepo.getAccount(username);
+    }
 }

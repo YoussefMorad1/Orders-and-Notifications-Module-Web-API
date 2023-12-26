@@ -1,24 +1,41 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.services;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
+import com.apiproject.ordersandnotificationsmanagement.accounts.repos.AccountsRepo;
+import com.apiproject.ordersandnotificationsmanagement.orders.models.CompoundOrder;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.Order;
 
 import com.apiproject.ordersandnotificationsmanagement.orders.models.SimpleOrder;
+import com.apiproject.ordersandnotificationsmanagement.orders.models.inputs.CompoundOrderInput;
+import com.apiproject.ordersandnotificationsmanagement.orders.models.inputs.OrderInput;
+import com.apiproject.ordersandnotificationsmanagement.orders.models.inputs.SimpleOrderInput;
 import com.apiproject.ordersandnotificationsmanagement.orders.repos.OrderRepo;
+import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
+import com.apiproject.ordersandnotificationsmanagement.products.services.ProductsService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 
 
-@AllArgsConstructor
 @Service
 public class OrdersService {
     private final OrderRepo orderRepo;
-    private final Long maxDurationToCancelShipping = 1000 * 60 * 60 * 24L;
+    private final ProductsService productsService;
+    private final AccountsRepo accountsService;
+    private final long maxDurationToCancelShipping = 1000 * 60 * 60 * 24L;
+    private final double shippingFeeFactor = 0.1;
+    private static int curOrderID = 0;
+    OrdersService(OrderRepo orderRepo, ProductsService productsService, AccountsRepo accountsService) {
+        this.orderRepo = orderRepo;
+        this.productsService = productsService;
+        this.accountsService = accountsService;
+    }
 
     public boolean placeOrder(Order order) {
         if (orderRepo.getOrder(order.getOrderID()) != null || !placingOrderDeductBalance(order) || !isOrderValid(order)) {
@@ -136,5 +153,85 @@ public class OrdersService {
         }
         orderRepo.setOrderShippingStatus(orderID, false);
         return true;
+    }
+
+    public Order getOrderFromOrderInput(OrderInput orderInput) {
+        // TODO: CLEAN THIS MESS
+        Order order;
+
+        if (orderInput instanceof SimpleOrderInput) {
+            SimpleOrderInput simpleOrderInput = (SimpleOrderInput) orderInput;
+
+            // Getting List of ProductItems from Product IDs
+            ArrayList<String> productsIDs = simpleOrderInput.getProductsIDs();
+            ArrayList<ProductItem> products = getProductItemsFromProductIDs(productsIDs);
+            if (products == null) {
+                return null;
+            }
+            double totalPrice = calculateTotalPrice(products);
+
+            // Getting Account from Account ID
+            String username = simpleOrderInput.getUserName();
+            Account account = accountsService.getAccount(username);
+            if (account == null) {
+                return null;
+            }
+
+            curOrderID++;
+            order = new SimpleOrder(String.valueOf(curOrderID), totalPrice * shippingFeeFactor,
+                    false, new Date(), simpleOrderInput.getLocation(), totalPrice, account, products);
+        } else {
+            CompoundOrderInput compoundOrderInput = (CompoundOrderInput) orderInput;
+            String commonLocation = compoundOrderInput.getCommonLocation();
+            ArrayList<SimpleOrderInput> simpleOrders = compoundOrderInput.getOrders();
+            ArrayList<SimpleOrder> simpleOrdersList = new ArrayList<>();
+            double maxShippingFeeOfSimpleOrders = 0;
+            for (SimpleOrderInput simpleOrderInput : simpleOrders) {
+                // Getting List of ProductItems from Product IDs
+                ArrayList<String> productsIDs = simpleOrderInput.getProductsIDs();
+                ArrayList<ProductItem> products = getProductItemsFromProductIDs(productsIDs);
+                if (products == null) {
+                    return null;
+                }
+                double totalPrice = calculateTotalPrice(products);
+
+                // Getting Account from Account ID
+                String username = simpleOrderInput.getUserName();
+                Account account = accountsService.getAccount(username);
+                if (account == null) {
+                    return null;
+                }
+
+                curOrderID++;
+                maxShippingFeeOfSimpleOrders = Math.max(maxShippingFeeOfSimpleOrders, totalPrice * shippingFeeFactor);
+                simpleOrdersList.add(new SimpleOrder(String.valueOf(curOrderID), totalPrice * shippingFeeFactor,
+                        false, new Date(), simpleOrderInput.getLocation(), totalPrice, account, products));
+            }
+
+            curOrderID++;
+            order = new CompoundOrder(String.valueOf(curOrderID), maxShippingFeeOfSimpleOrders, false, new Date(), commonLocation, simpleOrdersList);
+        }
+        return order;
+    }
+
+    private double calculateTotalPrice(ArrayList<ProductItem> products) {
+        double totalPrice = 0;
+        for (ProductItem p : products) {
+            totalPrice += p.getProduct().getPrice();
+        }
+        return totalPrice;
+    }
+
+    private ArrayList<ProductItem> getProductItemsFromProductIDs(ArrayList<String> productsIDs) {
+        ArrayList<ProductItem> productItems = new ArrayList<>();
+        for (String productID : productsIDs) {
+            Product curProduct = productsService.getProduct(productID);
+            ProductItem productItem = curProduct.getOneProductItem();
+            if (productItem == null) {
+                return null;
+            }
+            productItems.add(productItem);
+        }
+        return productItems;
     }
 }
