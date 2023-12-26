@@ -10,7 +10,6 @@ public enum Category {
     TOYS,
     SPORTS,
     OUTDOORS,
-
     GROCERY,
     HEALTH,
     BEAUTY,

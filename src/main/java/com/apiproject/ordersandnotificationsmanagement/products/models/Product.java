@@ -15,7 +15,7 @@ public class Product {
     protected String id;
     protected String name;
     protected double price;
-    protected Category category;
+    protected Category category; // 1 Category has many products
     protected Vendor vendor;
     @JsonIgnore
     private ArrayList<ProductItem> productItems;
