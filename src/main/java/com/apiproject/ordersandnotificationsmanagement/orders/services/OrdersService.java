@@ -13,15 +13,11 @@ import com.apiproject.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
 import com.apiproject.ordersandnotificationsmanagement.products.services.ProductsService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
-
 
 @Service
 public class OrdersService {
@@ -39,7 +35,7 @@ public class OrdersService {
     }
 
     public boolean placeOrder(Order order) {
-        if (orderRepo.getOrder(order.getOrderID()) != null || !placingOrderDeductBalance(order) || !isOrderValid(order)) {
+        if (orderRepo.getOrder(order.getOrderID(), true) != null || !placingOrderDeductBalance(order) || !isOrderValid(order)) {
             return false;
         }
         removeOrderProductItems(order);
@@ -97,7 +93,7 @@ public class OrdersService {
     }
 
     public boolean shipOrder(String orderId) {
-        Order order = orderRepo.getOrder(orderId);
+        Order order = orderRepo.getOrder(orderId, false);
         if (order == null || order.isShipping() || !shippingOrderDeductBalance(order)) {
             return false;
         }
@@ -132,27 +128,37 @@ public class OrdersService {
         return true;
     }
 
-    public Order getOrder(String orderID) {
-        return orderRepo.getOrder(orderID);
+    public Order getOrder(String orderID, boolean searchInsideCompoundOrders){
+        return orderRepo.getOrder(orderID, searchInsideCompoundOrders);
     }
 
     public boolean cancelOrder(String orderID) {
-        Order order = orderRepo.getOrder(orderID);
+        Order order = orderRepo.getOrder(orderID, false);
         if (order == null || order.isShipping()) {
             return false;
         }
         orderRepo.removeOrder(order);
+
+        ArrayList<SimpleOrder> orders = order.getOrderAsList();
+        for (SimpleOrder o : orders) {
+            Account account = o.getAccount();
+            account.setBalance(account.getBalance() + o.getTotalPrice());
+        }
+
         return true;
     }
 
     public boolean cancelShipping(String orderID) {
-        Order order = orderRepo.getOrder(orderID);
+        Order order = orderRepo.getOrder(orderID, false);
         Date now = new Date();
+        if (order == null)
+            return false;
         long diff = now.getTime() - order.getSetTime().getTime();
-        if (order == null || !order.isShipping() || diff > maxDurationToCancelShipping) {
+        if (!order.isShipping() || diff > maxDurationToCancelShipping) {
             return false;
         }
         orderRepo.setOrderShippingStatus(orderID, false);
+        // NO NEED TO REFUND THE SHIPPING FEE, BECAUSE THE SHIPPING ALREADY HAPPENED
         return true;
     }
 

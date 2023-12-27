@@ -11,11 +11,14 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 @Getter
 @Setter
 public class SimpleOrder extends Order {
     private String location;
     private double totalPrice;
+    private String username;
+    @JsonIgnore
     private Account account;
     private ArrayList<ProductItem> products;
     public SimpleOrder(String orderID, double shippingFee, boolean isShipping, Date setTime,
@@ -25,6 +28,7 @@ public class SimpleOrder extends Order {
         this.totalPrice = totalPrice;
         this.account = account;
         this.products = products;
+        this.username = account.getAccountCredentials().getUsername();
     }
     @JsonIgnore
     @Override

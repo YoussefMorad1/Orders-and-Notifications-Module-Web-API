@@ -10,7 +10,7 @@ import lombok.Setter;
 public class Account {
     private AccountCredentials accountCredentials;
     private CustomerInfo customerInfo;
-    private Double balance;
+    private double balance;
 }
 
 /**

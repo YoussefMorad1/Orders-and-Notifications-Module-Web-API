@@ -26,9 +26,9 @@ public class OrdersController {
     }
     @PostMapping("/ship/{orderID}")
     public ResponseEntity<String> shipOrder(@PathVariable String orderID) {
-        Order order = ordersService.getOrder(orderID);
+        Order order = ordersService.getOrder(orderID, false);
         if (order == null) {
-            return ResponseEntity.badRequest().body("order not found");
+            return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (ordersService.shipOrder(orderID)) {
             return ResponseEntity.ok("Order is shipped successfully");
         } else {
@@ -37,7 +37,7 @@ public class OrdersController {
     }
     @GetMapping("/get/{orderID}")
     public ResponseEntity<?> getOrderInfo(@PathVariable String orderID) {
-        Order order = ordersService.getOrder(orderID);
+        Order order = ordersService.getOrder(orderID, true);
         if (order == null) {
             return ResponseEntity.badRequest().body("order not found");
         } else {
@@ -46,20 +46,20 @@ public class OrdersController {
     }
     @DeleteMapping("/cancel/{orderID}")
     public ResponseEntity<String> cancelOrder(@PathVariable String orderID) {
-        Order order = ordersService.getOrder(orderID);
+        Order order = ordersService.getOrder(orderID, false);
         if (order == null) {
-            return ResponseEntity.badRequest().body("order not found");
+            return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (ordersService.cancelOrder(orderID)) {
-            return ResponseEntity.ok("Order is canceled successfully");
+            return ResponseEntity.ok("Order is canceled successfully (balance is refunded)");
         } else {
             return ResponseEntity.badRequest().body("Order is already shipped");
         }
     }
     @PutMapping("/cancelShipping/{orderID}")
     public ResponseEntity<String> cancelShipping(@PathVariable String orderID) {
-        Order order = ordersService.getOrder(orderID);
+        Order order = ordersService.getOrder(orderID, false);
         if (order == null) {
-            return ResponseEntity.badRequest().body("order not found");
+            return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (!order.isShipping()) {
             return ResponseEntity.badRequest().body("Order is not shipped yet");
         } else if (ordersService.cancelShipping(orderID)) {
