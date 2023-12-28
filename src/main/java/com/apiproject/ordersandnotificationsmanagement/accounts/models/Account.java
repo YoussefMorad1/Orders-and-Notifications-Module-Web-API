@@ -19,7 +19,8 @@ public class Account {
      "customerInfo": {
          "name": "youssef",
          "email": "youssef@mail.com",
-         "phone": "1234"
+         "phone": "1234",
+         "language": "ENGLISH"
      },
      "accountCredentials": {
          "username": "youssef1",

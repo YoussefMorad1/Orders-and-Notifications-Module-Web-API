@@ -19,7 +19,7 @@ public class AccountsController {
         if (accountsService.registerAccount(account)) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Account created successfully");
         } else {
-            return ResponseEntity.badRequest().body("Account already exists");
+            return ResponseEntity.badRequest().body("Invalid account input (username already exists or balance is negative)");
         }
     }
 

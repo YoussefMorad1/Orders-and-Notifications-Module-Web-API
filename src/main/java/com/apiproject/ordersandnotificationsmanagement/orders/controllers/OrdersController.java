@@ -15,15 +15,19 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class OrdersController {
     private OrdersService ordersService;
+
     @PostMapping("/place")
     public ResponseEntity<String> placeOrder(@RequestBody OrderInput orderInput) {
         Order order = ordersService.getOrderFromOrderInput(orderInput);
-        if (ordersService.placeOrder(order)) {
+        if (order == null) {
+            return ResponseEntity.badRequest().body("Invalid order input (check username and products IDs)");
+        } else if (ordersService.placeOrder(order)) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Order is placed successfully");
         } else {
             return ResponseEntity.badRequest().body("Order with this ID already exists");
         }
     }
+
     @PostMapping("/ship/{orderID}")
     public ResponseEntity<String> shipOrder(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);
@@ -31,10 +35,13 @@ public class OrdersController {
             return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (ordersService.shipOrder(orderID)) {
             return ResponseEntity.ok("Order is shipped successfully");
-        } else {
+        } else if (order.isShipping()) {
             return ResponseEntity.badRequest().body("Order is already shipped");
+        } else {
+            return ResponseEntity.badRequest().body("Customer balance is not enough");
         }
     }
+
     @GetMapping("/get/{orderID}")
     public ResponseEntity<?> getOrderInfo(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, true);
@@ -44,6 +51,7 @@ public class OrdersController {
             return ResponseEntity.ok(order);
         }
     }
+
     @DeleteMapping("/cancel/{orderID}")
     public ResponseEntity<String> cancelOrder(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);
@@ -55,6 +63,7 @@ public class OrdersController {
             return ResponseEntity.badRequest().body("Order is already shipped");
         }
     }
+
     @PutMapping("/cancelShipping/{orderID}")
     public ResponseEntity<String> cancelShipping(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);

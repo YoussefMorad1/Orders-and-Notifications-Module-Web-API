@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 public class AccountsService {
     private final AccountsRepo accountsRepo;
     public boolean registerAccount(Account account) {
-        if (account == null || accountsRepo.isAccountExists(account.getAccountCredentials().getUsername())) {
+        if (account == null || accountsRepo.isAccountExists(account.getAccountCredentials().getUsername())
+                || account.getBalance() < 0) {
             return false;
         }
         accountsRepo.addAccount(account);

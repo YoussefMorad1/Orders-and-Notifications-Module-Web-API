@@ -2,6 +2,7 @@ package com.apiproject.ordersandnotificationsmanagement.orders.services;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
 import com.apiproject.ordersandnotificationsmanagement.accounts.repos.AccountsRepo;
+import com.apiproject.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.CompoundOrder;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.Order;
 
@@ -13,6 +14,7 @@ import com.apiproject.ordersandnotificationsmanagement.orders.repos.OrderRepo;
 import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
 import com.apiproject.ordersandnotificationsmanagement.products.services.ProductsService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,13 +26,15 @@ public class OrdersService {
     private final OrderRepo orderRepo;
     private final ProductsService productsService;
     private final AccountsRepo accountsService;
+    private final NotificationsService notificationsService;
     private final long maxDurationToCancelShipping = 1000 * 60 * 60 * 24L;
     private final double shippingFeeFactor = 0.1;
     private static int curOrderID = 0;
 
-    OrdersService(OrderRepo orderRepo, ProductsService productsService, AccountsRepo accountsService) {
+    OrdersService(OrderRepo orderRepo, ProductsService productsService, @Lazy NotificationsService notificationsService, AccountsRepo accountsService) {
         this.orderRepo = orderRepo;
         this.productsService = productsService;
+        this.notificationsService = notificationsService;
         this.accountsService = accountsService;
     }
 
@@ -40,6 +44,10 @@ public class OrdersService {
         }
         removeOrderProductItems(order);
         orderRepo.addOrder(order);
+
+        ArrayList<SimpleOrder> orders = order.getOrderAsList();
+        for (SimpleOrder o : orders)
+            notificationsService.sendPlaceOrderNotification(o);
         return true;
     }
 
@@ -98,6 +106,10 @@ public class OrdersService {
             return false;
         }
         orderRepo.setOrderShippingStatus(orderId, true);
+
+        ArrayList<SimpleOrder> orders = order.getOrderAsList();
+        for (SimpleOrder o : orders)
+            notificationsService.sendShipOrderNotification(o);
         return true;
     }
 
