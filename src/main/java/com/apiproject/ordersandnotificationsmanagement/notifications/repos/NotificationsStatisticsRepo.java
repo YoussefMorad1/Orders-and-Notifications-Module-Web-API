@@ -37,12 +37,12 @@ public class NotificationsStatisticsRepo {
     }
 
     private void analyzeEmail(Notification notification) {
-        String phoneNumber = notification.getAccount().getCustomerInfo().getPhone();
-        smsFrequency.put(phoneNumber, smsFrequency.getOrDefault(phoneNumber, 0) + 1);
+        String mail = notification.getAccount().getCustomerInfo().getEmail();
+        mailFrequency.put(mail, mailFrequency.getOrDefault(mail, 0) + 1);
     }
 
     private void analyzeSMS(Notification notification) {
-        String phoneNumber = notification.getAccount().getCustomerInfo().getEmail();
-        mailFrequency.put(phoneNumber, mailFrequency.getOrDefault(phoneNumber, 0) + 1);
+        String phoneNumber = notification.getAccount().getCustomerInfo().getPhone();
+        smsFrequency.put(phoneNumber, smsFrequency.getOrDefault(phoneNumber, 0) + 1);
     }
 }

@@ -15,16 +15,8 @@ import java.util.Queue;
 @AllArgsConstructor
 public class NotificationsController {
     NotificationsService notificationsService;
-    @GetMapping("/getAllInQueue")
+    @GetMapping("/getInQueue")
     public Queue<Notification> getAllNotifications() {
         return notificationsService.getNotificationsQueue();
     }
-
-    // This Endpoint isn't required in the project's requirements
-    // Since it only asks to remove the notification from the queue
-    // And no need to access them later
-//    @GetMapping("/getAllSent")
-//    public ArrayList<Notification> getSentNotifications() {
-//        return notificationsService.getSentNotifications();
-//    }
 }

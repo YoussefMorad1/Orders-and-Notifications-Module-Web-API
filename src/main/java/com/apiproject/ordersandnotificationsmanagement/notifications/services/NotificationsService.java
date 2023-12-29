@@ -70,8 +70,4 @@ public class NotificationsService {
     public Queue<Notification> getNotificationsQueue() {
         return notificationsRepo.getNotifications();
     }
-
-    public ArrayList<Notification> getSentNotifications() {
-        return notificationsRepo.getSentNotifications();
-    }
 }

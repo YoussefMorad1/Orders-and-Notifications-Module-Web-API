@@ -12,10 +12,8 @@ import java.util.Queue;
 @Getter
 public class NotificationsRepo {
     private final Queue<Notification> notifications;
-    private final ArrayList<Notification> sentNotifications;
     NotificationsRepo() {
         notifications = new LinkedList<>();
-        sentNotifications = new ArrayList<>();
     }
     public void addNotification(Notification notification) {
         if (notification == null) {
@@ -24,10 +22,6 @@ public class NotificationsRepo {
         notifications.add(notification);
     }
     public Notification getNextNotificationAndRemove() {
-        Notification notification = notifications.poll();
-        if (notification != null) {
-            sentNotifications.add(notification);
-        }
-        return notification;
+        return notifications.poll();
     }
 }
