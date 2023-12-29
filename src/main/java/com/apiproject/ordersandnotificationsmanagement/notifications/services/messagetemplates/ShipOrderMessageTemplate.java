@@ -25,11 +25,11 @@ public class ShipOrderMessageTemplate extends MessageTemplate{
 
         HashMap<Language, String> languageToMessageMap = new HashMap<>();
         languageToMessageMap.put(Language.ENGLISH, message);
-        languageToMessageMap.put(Language.ARABIC, "عزيزي %s، طلبك برقم %s في الطريق. الوجهة هي %s.");
+        languageToMessageMap.put(Language.GERMAN, "Sehr geehrte %s, Ihre Bestellung #%s ist unterwegs. Das Ziel ist %s.");
 
         HashMap<Language, String> languageToSubjectMap = new HashMap<>();
         languageToSubjectMap.put(Language.ENGLISH, subject);
-        languageToSubjectMap.put(Language.ARABIC, "بدأ الطلب برقم %s في الشحن");
+        languageToSubjectMap.put(Language.GERMAN, "Bestellung #%s hat den Versand begonnen");
 
         this.setSubject(subject);
         this.setMessage(message);
@@ -39,13 +39,13 @@ public class ShipOrderMessageTemplate extends MessageTemplate{
     }
     @Override
     public Notification getNotification(String username, String orderId, Language language, NotificationChannel channel) {
-        if (!this.isValidNotificationData(username, orderId, language, channel)) {
+        if (!this.isValidNotificationData(username, orderId, channel)) {
             return null;
         }
         Account account = accountsService.getAccount(username);
         Order order = ordersService.getOrder(orderId, true);
-        String subject = String.format(this.getLanguageToSubjectMap().get(language), orderId);
-        String message = String.format(this.getLanguageToMessageMap().get(language),
+        String subject = String.format(this.getLanguageToSubjectMap().getOrDefault(language, this.subject), orderId);
+        String message = String.format(this.getLanguageToMessageMap().getOrDefault(language, this.message),
                                        account.getCustomerInfo().getName(),
                                        orderId, ((SimpleOrder) order).getLocation());
         return new Notification(subject, message, account, channel, language, this);

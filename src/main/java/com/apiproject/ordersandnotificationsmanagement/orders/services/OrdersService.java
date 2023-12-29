@@ -39,7 +39,8 @@ public class OrdersService {
     }
 
     public boolean placeOrder(Order order) {
-        if (orderRepo.getOrder(order.getOrderID(), true) != null || !placingOrderDeductBalance(order) || !isOrderValid(order)) {
+        if (orderRepo.getOrder(order.getOrderID(), true) != null
+                || !placingOrderDeductBalance(order)) {
             return false;
         }
         removeOrderProductItems(order);
@@ -59,33 +60,6 @@ public class OrdersService {
                 p.getProduct().getProductItems().remove(p);
             }
         }
-    }
-
-    private boolean isOrderValid(Order order) {
-        ArrayList<SimpleOrder> orders = order.getOrderAsList();
-        for (SimpleOrder o : orders) { // for each simple order
-            ArrayList<ProductItem> products = o.getProducts(); // get the products inside current simple order
-            for (ProductItem p : products) {
-                // make sure each product has at least one product item
-                if (p.getProduct().getProductItems().isEmpty()) {
-                    return false;
-                }
-                // make sure the product item is in the product (valid input from user/json)
-                ArrayList<ProductItem> productItems = p.getProduct().getProductItems();
-                boolean found = false;
-                for (ProductItem pi : productItems) {
-                    if (pi.getSerialNumber().equals(p.getSerialNumber())) {
-                        // if product item is found inside parent product, then it's valid so far
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private boolean placingOrderDeductBalance(Order order) {
@@ -140,7 +114,7 @@ public class OrdersService {
         return true;
     }
 
-    public Order getOrder(String orderID, boolean searchInsideCompoundOrders){
+    public Order getOrder(String orderID, boolean searchInsideCompoundOrders) {
         return orderRepo.getOrder(orderID, searchInsideCompoundOrders);
     }
 
@@ -231,6 +205,9 @@ public class OrdersService {
         ArrayList<ProductItem> productItems = new ArrayList<>();
         for (String productID : productsIDs) {
             Product curProduct = productsService.getProduct(productID);
+            if (curProduct == null) {
+                return null;
+            }
             ProductItem productItem = curProduct.getOneProductItem();
             if (productItem == null) {
                 return null;

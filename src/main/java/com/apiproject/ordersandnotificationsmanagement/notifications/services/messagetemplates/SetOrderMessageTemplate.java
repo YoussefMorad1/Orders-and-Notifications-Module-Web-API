@@ -23,11 +23,11 @@ public class SetOrderMessageTemplate extends MessageTemplate {
 
         HashMap<Language, String> languageToMessageMap = new HashMap<>();
         languageToMessageMap.put(Language.ENGLISH, message);
-        languageToMessageMap.put(Language.ARABIC, "عزيزي %s، تم تأكيد طلبك برقم %s.");
+        languageToMessageMap.put(Language.GERMAN, "Sehr geehrte %s, Ihre Bestellung #%s wurde festgelegt.");
 
         HashMap<Language, String> languageToSubjectMap = new HashMap<>();
         languageToSubjectMap.put(Language.ENGLISH, subject);
-        languageToSubjectMap.put(Language.ARABIC, "تم تأكيد الطلب برقم %s");
+        languageToSubjectMap.put(Language.GERMAN, "Bestellung #%s wurde festgelegt");
 
         this.setSubject(subject);
         this.setMessage(message);
@@ -37,12 +37,12 @@ public class SetOrderMessageTemplate extends MessageTemplate {
     }
     @Override
     public Notification getNotification(String username, String orderId, Language language, NotificationChannel channel) {
-        if (!this.isValidNotificationData(username, orderId, language, channel)) {
+        if (!this.isValidNotificationData(username, orderId, channel)) {
             return null;
         }
         Account account = accountsService.getAccount(username);
-        String subject = String.format(this.getLanguageToSubjectMap().get(language), orderId);
-        String message = String.format(this.getLanguageToMessageMap().get(language), account.getCustomerInfo().getName(), orderId);
+        String subject = String.format(this.getLanguageToSubjectMap().getOrDefault(language, this.subject), orderId);
+        String message = String.format(this.getLanguageToMessageMap().getOrDefault(language, this.message), account.getCustomerInfo().getName(), orderId);
         return new Notification(subject, message, account, channel, language, this);
     }
 

@@ -38,9 +38,8 @@ public abstract class MessageTemplate {
     }
 
     public abstract Notification getNotification(String username, String orderId, Language language, NotificationChannel channel);
-    protected boolean isValidNotificationData(String username, String orderId, Language language, NotificationChannel channel) {
-        if (!this.getAvailableChannels().contains(channel)
-                || !this.getLanguageToSubjectMap().containsKey(language)) {
+    protected boolean isValidNotificationData(String username, String orderId, NotificationChannel channel) {
+        if (!this.getAvailableChannels().contains(channel)) {
             return false;
         }
         Account account = accountsService.getAccount(username);

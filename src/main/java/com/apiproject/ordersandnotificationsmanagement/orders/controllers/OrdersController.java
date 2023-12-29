@@ -20,7 +20,7 @@ public class OrdersController {
     public ResponseEntity<String> placeOrder(@RequestBody OrderInput orderInput) {
         Order order = ordersService.getOrderFromOrderInput(orderInput);
         if (order == null) {
-            return ResponseEntity.badRequest().body("Invalid order input (check username and products IDs)");
+            return ResponseEntity.badRequest().body("Invalid order input (check username and products IDs and quantities)");
         } else if (ordersService.placeOrder(order)) {
             return ResponseEntity.status(HttpStatus.CREATED).body("Order is placed successfully");
         } else {
