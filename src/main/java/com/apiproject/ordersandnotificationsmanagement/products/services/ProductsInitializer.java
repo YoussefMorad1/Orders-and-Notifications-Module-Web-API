@@ -6,12 +6,14 @@ import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
 import com.apiproject.ordersandnotificationsmanagement.products.repos.CategoriesRepo;
 import com.apiproject.ordersandnotificationsmanagement.products.repos.ProductsRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
-@Service
+@Component
 public class ProductsInitializer {
     private ProductsRepo productsRepo;
     private CategoriesRepo categoriesRepo;
@@ -20,6 +22,7 @@ public class ProductsInitializer {
         this.categoriesRepo = categoriesRepo;
         putInitialData();
     }
+
     private void putInitialData(){
         Product product1 = new Product("1", "product1", 100, Category.BOOKS, Vendor.AMAZON, new ArrayList<>());
         product1.getProductItems().add(new ProductItem(product1, "1"));

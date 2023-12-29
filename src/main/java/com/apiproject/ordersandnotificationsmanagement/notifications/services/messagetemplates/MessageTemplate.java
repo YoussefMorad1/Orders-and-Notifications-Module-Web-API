@@ -1,4 +1,4 @@
-package com.apiproject.ordersandnotificationsmanagement.notifications.services;
+package com.apiproject.ordersandnotificationsmanagement.notifications.services.messagetemplates;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
 import com.apiproject.ordersandnotificationsmanagement.accounts.services.AccountsService;
@@ -50,4 +50,6 @@ public abstract class MessageTemplate {
         }
         return true;
     }
+    @Override
+    public abstract String toString();
 }

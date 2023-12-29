@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Queue;
 
 @RestController
@@ -14,8 +15,16 @@ import java.util.Queue;
 @AllArgsConstructor
 public class NotificationsController {
     NotificationsService notificationsService;
-    @GetMapping("/getAll")
+    @GetMapping("/getAllInQueue")
     public Queue<Notification> getAllNotifications() {
-        return notificationsService.getAllNotifications();
+        return notificationsService.getNotificationsQueue();
     }
+
+    // This Endpoint isn't required in the project's requirements
+    // Since it only asks to remove the notification from the queue
+    // And no need to access them later
+//    @GetMapping("/getAllSent")
+//    public ArrayList<Notification> getSentNotifications() {
+//        return notificationsService.getSentNotifications();
+//    }
 }
