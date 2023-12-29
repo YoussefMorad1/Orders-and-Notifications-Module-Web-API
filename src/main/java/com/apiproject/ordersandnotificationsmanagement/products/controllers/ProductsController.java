@@ -22,17 +22,4 @@ public class ProductsController {
     public ResponseEntity<ArrayList<Product>> getAllProducts() {
         return ResponseEntity.ok(productsService.getAllProducts());
     }
-
-    @GetMapping("/productItem/{productID}")
-    public ResponseEntity<?> getProductItem(@PathVariable String productID) {
-        Product product = productsService.getProduct(productID);
-        if (product == null) {
-            return ResponseEntity.badRequest().body("Product not found");
-        }
-        ProductItem productItem = productsService.getProductItem(product);
-        if (productItem == null) {
-            return ResponseEntity.badRequest().body("Product is out of stock");
-        }
-        return ResponseEntity.ok(productItem);
-    }
 }

@@ -15,7 +15,7 @@ import java.util.Queue;
 @AllArgsConstructor
 public class NotificationsController {
     NotificationsService notificationsService;
-    @GetMapping("/getInQueue")
+    @GetMapping("/get_in_queue")
     public Queue<Notification> getAllNotifications() {
         return notificationsService.getNotificationsQueue();
     }

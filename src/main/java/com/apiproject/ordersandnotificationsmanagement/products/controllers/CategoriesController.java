@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/products/categories")
 public class CategoriesController {
     CategoriesService categoryService;
-    @GetMapping("/getRemainingProductsCount/{category}")
+    @GetMapping("/get_products_count/{category}")
     public Integer getCategoryRemainingProductsCount(@PathVariable Category category){
         return categoryService.getCategoryRemainingProductsCount(category);
     }

@@ -5,6 +5,7 @@ import com.apiproject.ordersandnotificationsmanagement.notifications.enums.Langu
 import com.apiproject.ordersandnotificationsmanagement.notifications.enums.NotificationChannel;
 import com.apiproject.ordersandnotificationsmanagement.notifications.services.messagetemplates.MessageTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,6 @@ public class Notification {
     private String message;
     @JsonIgnore
     private Account account;
-    private String username;
     private NotificationChannel channel;
     private Language language;
     @JsonIgnore
@@ -26,9 +26,12 @@ public class Notification {
         this.subject = subject;
         this.message = message;
         this.account = account;
-        this.username = account.getAccountCredentials().getUsername();
         this.channel = channel;
         this.language = language;
         this.notificationTemplate = notificationTemplate;
+    }
+    @JsonInclude
+    public String getUserName(){
+        return account.getAccountCredentials().getUsername();
     }
 }

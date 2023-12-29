@@ -64,7 +64,7 @@ public class OrdersController {
         }
     }
 
-    @PutMapping("/cancelShipping/{orderID}")
+    @PutMapping("/cancel_shipping/{orderID}")
     public ResponseEntity<String> cancelShipping(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);
         if (order == null) {

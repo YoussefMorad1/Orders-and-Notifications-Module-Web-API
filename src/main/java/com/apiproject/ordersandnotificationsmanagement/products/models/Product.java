@@ -3,13 +3,14 @@ package com.apiproject.ordersandnotificationsmanagement.products.models;
 import com.apiproject.ordersandnotificationsmanagement.products.enums.Category;
 import com.apiproject.ordersandnotificationsmanagement.products.enums.Vendor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 public class Product {
     protected String id;
@@ -25,5 +26,9 @@ public class Product {
             return null;
         }
         return productItems.get(0);
+    }
+    @JsonInclude
+    public int getRemainingItemsCount(){
+        return productItems.size();
     }
 }

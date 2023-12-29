@@ -5,6 +5,7 @@ import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +18,6 @@ import java.util.Date;
 public class SimpleOrder extends Order {
     private String location;
     private double totalPrice;
-    private String username;
     @JsonIgnore
     private Account account;
     private ArrayList<ProductItem> products;
@@ -28,7 +28,6 @@ public class SimpleOrder extends Order {
         this.totalPrice = totalPrice;
         this.account = account;
         this.products = products;
-        this.username = account.getAccountCredentials().getUsername();
     }
     @JsonIgnore
     @Override
@@ -36,5 +35,9 @@ public class SimpleOrder extends Order {
         ArrayList<SimpleOrder> orders = new ArrayList<>();
         orders.add(this);
         return orders;
+    }
+    @JsonInclude
+    public String getUsername(){
+        return account.getAccountCredentials().getUsername();
     }
 }
