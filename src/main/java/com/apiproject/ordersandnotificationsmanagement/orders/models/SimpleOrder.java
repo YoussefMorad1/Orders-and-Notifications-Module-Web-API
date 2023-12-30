@@ -7,6 +7,7 @@ import com.apiproject.ordersandnotificationsmanagement.products.models.ProductIt
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -16,13 +17,13 @@ import java.util.Date;
 @Getter
 @Setter
 public class SimpleOrder extends Order {
-    private String location;
     private double totalPrice;
+    private String location;
     @JsonIgnore
     private Account account;
     private ArrayList<ProductItem> products;
     public SimpleOrder(String orderID, double shippingFee, boolean isShipping, Date setTime,
-                       String location, double totalPrice, Account account, ArrayList<ProductItem> products) {
+                       @NonNull String location, double totalPrice, @NonNull Account account, @NonNull ArrayList<ProductItem> products) {
         super(orderID, shippingFee, isShipping, setTime);
         this.location = location;
         this.totalPrice = totalPrice;
