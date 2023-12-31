@@ -1,7 +1,6 @@
 package com.apiproject.ordersandnotificationsmanagement.orders.models;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
-import com.apiproject.ordersandnotificationsmanagement.products.models.Product;
 
 import com.apiproject.ordersandnotificationsmanagement.products.models.ProductItem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,7 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 public class SimpleOrder extends Order {
-    private double ItemsTotalPrice;
+    private double itemsTotalPrice;
     private String location;
     @JsonIgnore
     private Account account;
@@ -26,7 +25,7 @@ public class SimpleOrder extends Order {
                        @NonNull String location, double ItemsTotalPrice, @NonNull Account account, @NonNull ArrayList<ProductItem> products) {
         super(orderID, shippingFee, isShipping, setTime);
         this.location = location;
-        this.ItemsTotalPrice = ItemsTotalPrice;
+        this.itemsTotalPrice = ItemsTotalPrice;
         this.account = account;
         this.products = products;
     }
