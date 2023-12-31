@@ -17,7 +17,7 @@ public class OrdersController {
     private OrdersService ordersService;
 
     @PostMapping("/place")
-    public ResponseEntity<Object> placeOrder(@RequestBody OrderInput orderInput) {
+    public ResponseEntity<?> placeOrder(@RequestBody OrderInput orderInput) {
         Order order = ordersService.getOrderFromOrderInput(orderInput);
         if (order == null) {
             return ResponseEntity.badRequest().body("Invalid order input (check username and products IDs and quantities)");
@@ -28,13 +28,13 @@ public class OrdersController {
         }
     }
 
-    @PostMapping("/ship/{orderID}")
-    public ResponseEntity<String> shipOrder(@PathVariable String orderID) {
+    @PutMapping("/ship/{orderID}")
+    public ResponseEntity<?> shipOrder(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);
         if (order == null) {
             return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (ordersService.shipOrder(orderID)) {
-            return ResponseEntity.ok("Order is shipped successfully");
+            return ResponseEntity.ok(order);
         } else if (order.isShipping()) {
             return ResponseEntity.badRequest().body("Order is already shipped");
         } else {
@@ -65,14 +65,14 @@ public class OrdersController {
     }
 
     @PutMapping("/cancel_shipping/{orderID}")
-    public ResponseEntity<String> cancelShipping(@PathVariable String orderID) {
+    public ResponseEntity<?> cancelShipping(@PathVariable String orderID) {
         Order order = ordersService.getOrder(orderID, false);
         if (order == null) {
             return ResponseEntity.badRequest().body("order not found or is part of a compound order");
         } else if (!order.isShipping()) {
             return ResponseEntity.badRequest().body("Order is not shipped yet");
         } else if (ordersService.cancelShipping(orderID)) {
-            return ResponseEntity.ok("Order shipping is canceled successfully");
+            return ResponseEntity.ok(order);
         } else {
             return ResponseEntity.badRequest().body("Order shipping time is expired (only 2 minutes allowed)");
         }
