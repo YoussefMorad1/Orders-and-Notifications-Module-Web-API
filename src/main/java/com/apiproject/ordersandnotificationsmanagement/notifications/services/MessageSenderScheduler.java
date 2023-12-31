@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class MessageSenderScheduler {
     private final NotificationsRepo notificationsRepo;
     private final NotificationsStatistics notificationsStatistics;
-    @Scheduled(fixedDelay = 20 * 1000, initialDelay = 20 * 1000) // Run every 20 seconds
+    @Scheduled(fixedDelay = 60 * 1000, initialDelay = 60 * 1000) // Run every 60 seconds
     public void sendNotifications() {
         Notification notification = notificationsRepo.getNextNotificationAndRemove();
         if (notification == null)

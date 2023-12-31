@@ -27,7 +27,7 @@ public class OrdersService {
     private final ProductsService productsService;
     private final AccountsRepo accountsService;
     private final NotificationsService notificationsService;
-    private final long maxDurationToCancelShipping = 1000 * 60 * 60 * 24L;
+    private final long maxDurationToCancelShipping = 1000 * 60L; // 1000 milliseconds * 60 seconds (1 minute)
     private final double shippingFeeFactor = 0.1;
     private static int curOrderID = 0;
 
@@ -66,10 +66,10 @@ public class OrdersService {
         ArrayList<SimpleOrder> orders = order.getOrderAsList();
         for (SimpleOrder o : orders) {
             Account account = o.getAccount();
-            if (account.getBalance() < o.getTotalPrice()) {
+            if (account.getBalance() < o.getItemsTotalPrice()) {
                 return false;
             }
-            account.setBalance(account.getBalance() - o.getTotalPrice());
+            account.setBalance(account.getBalance() - o.getItemsTotalPrice());
         }
         return true;
     }
@@ -128,7 +128,7 @@ public class OrdersService {
         ArrayList<SimpleOrder> orders = order.getOrderAsList();
         for (SimpleOrder o : orders) {
             Account account = o.getAccount();
-            account.setBalance(account.getBalance() + o.getTotalPrice());
+            account.setBalance(account.getBalance() + o.getItemsTotalPrice());
         }
 
         return true;

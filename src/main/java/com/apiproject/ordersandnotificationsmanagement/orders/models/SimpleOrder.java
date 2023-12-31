@@ -17,16 +17,16 @@ import java.util.Date;
 @Getter
 @Setter
 public class SimpleOrder extends Order {
-    private double totalPrice;
+    private double ItemsTotalPrice;
     private String location;
     @JsonIgnore
     private Account account;
     private ArrayList<ProductItem> products;
     public SimpleOrder(String orderID, double shippingFee, boolean isShipping, Date setTime,
-                       @NonNull String location, double totalPrice, @NonNull Account account, @NonNull ArrayList<ProductItem> products) {
+                       @NonNull String location, double ItemsTotalPrice, @NonNull Account account, @NonNull ArrayList<ProductItem> products) {
         super(orderID, shippingFee, isShipping, setTime);
         this.location = location;
-        this.totalPrice = totalPrice;
+        this.ItemsTotalPrice = ItemsTotalPrice;
         this.account = account;
         this.products = products;
     }
