@@ -37,11 +37,8 @@ public abstract class MessageTemplate {
         this.languageToMessageMap = new HashMap<>();
     }
 
-    public abstract Notification getNotification(String username, String orderId, Language language, NotificationChannel channel);
-    protected boolean isValidNotificationData(String username, String orderId, NotificationChannel channel) {
-        if (!this.getAvailableChannels().contains(channel)) {
-            return false;
-        }
+    public abstract Notification getNotification(String username, String orderId, Language language);
+    protected boolean isValidNotificationData(String username, String orderId) {
         Account account = accountsService.getAccount(username);
         Order order = ordersService.getOrder(orderId, true);
         if (account == null || order == null || order instanceof CompoundOrder) {

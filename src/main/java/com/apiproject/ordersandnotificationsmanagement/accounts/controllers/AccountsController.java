@@ -23,6 +23,11 @@ public class AccountsController {
         }
     }
 
+    @GetMapping("/get")
+    public ResponseEntity<String> getAccount(@RequestBody String x) {
+        return ResponseEntity.ok(x);
+    }
+
     @GetMapping("/login")
     public ResponseEntity<?> checkForLogin(@RequestBody AccountCredentials accountCredentials) {
         Account account = accountsService.checkForLogin(

@@ -36,14 +36,14 @@ public class SetOrderMessageTemplate extends MessageTemplate {
         this.setLanguageToMessageMap(languageToMessageMap);
     }
     @Override
-    public Notification getNotification(String username, String orderId, Language language, NotificationChannel channel) {
-        if (!this.isValidNotificationData(username, orderId, channel)) {
+    public Notification getNotification(String username, String orderId, Language language) {
+        if (!this.isValidNotificationData(username, orderId)) {
             return null;
         }
         Account account = accountsService.getAccount(username);
         String subject = String.format(this.getLanguageToSubjectMap().getOrDefault(language, this.subject), orderId);
         String message = String.format(this.getLanguageToMessageMap().getOrDefault(language, this.message), account.getCustomerInfo().getName(), orderId);
-        return new Notification(subject, message, account, channel, language, this);
+        return new Notification(subject, message, account, language, this);
     }
 
     @Override

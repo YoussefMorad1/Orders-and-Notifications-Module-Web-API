@@ -1,7 +1,8 @@
-package com.apiproject.ordersandnotificationsmanagement.notifications.services;
+package com.apiproject.ordersandnotificationsmanagement.notifications.services.scheduling;
 
 import com.apiproject.ordersandnotificationsmanagement.notifications.models.Notification;
 import com.apiproject.ordersandnotificationsmanagement.notifications.repos.NotificationsRepo;
+import com.apiproject.ordersandnotificationsmanagement.notifications.services.NotificationsStatistics;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

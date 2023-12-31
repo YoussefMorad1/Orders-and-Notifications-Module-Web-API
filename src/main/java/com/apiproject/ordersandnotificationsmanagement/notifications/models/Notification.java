@@ -22,14 +22,23 @@ public class Notification {
     private Language language;
     @JsonIgnore
     private MessageTemplate notificationTemplate;
-    public Notification(String subject, String message, Account account, NotificationChannel channel, Language language, MessageTemplate notificationTemplate) {
+    public Notification(String subject, String message, Account account, Language language, MessageTemplate notificationTemplate) {
         this.subject = subject;
         this.message = message;
         this.account = account;
-        this.channel = channel;
         this.language = language;
         this.notificationTemplate = notificationTemplate;
     }
+
+    public Notification(Notification notification) {
+        this.subject = notification.getSubject();
+        this.message = notification.getMessage();
+        this.account = notification.getAccount();
+        this.channel = notification.getChannel();
+        this.language = notification.getLanguage();
+        this.notificationTemplate = notification.getNotificationTemplate();
+    }
+
     @JsonInclude
     public String getUserName(){
         return account.getAccountCredentials().getUsername();

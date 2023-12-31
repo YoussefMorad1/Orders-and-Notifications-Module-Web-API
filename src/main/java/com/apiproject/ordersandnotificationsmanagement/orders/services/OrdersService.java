@@ -2,6 +2,7 @@ package com.apiproject.ordersandnotificationsmanagement.orders.services;
 
 import com.apiproject.ordersandnotificationsmanagement.accounts.models.Account;
 import com.apiproject.ordersandnotificationsmanagement.accounts.repos.AccountsRepo;
+import com.apiproject.ordersandnotificationsmanagement.notifications.enums.NotificationReason;
 import com.apiproject.ordersandnotificationsmanagement.notifications.services.NotificationsService;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.CompoundOrder;
 import com.apiproject.ordersandnotificationsmanagement.orders.models.Order;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+
+import static com.apiproject.ordersandnotificationsmanagement.notifications.enums.NotificationReason.ORDER_CREATED;
 
 @Service
 public class OrdersService {
@@ -48,7 +51,7 @@ public class OrdersService {
 
         ArrayList<SimpleOrder> orders = order.getOrderAsList();
         for (SimpleOrder o : orders)
-            notificationsService.sendPlaceOrderNotification(o);
+            notificationsService.sendNotification(o, ORDER_CREATED);
         return true;
     }
 
@@ -83,7 +86,7 @@ public class OrdersService {
 
         ArrayList<SimpleOrder> orders = order.getOrderAsList();
         for (SimpleOrder o : orders)
-            notificationsService.sendShipOrderNotification(o);
+            notificationsService.sendNotification(o, NotificationReason.ORDER_SHIPPED);
         return true;
     }
 

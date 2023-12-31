@@ -16,7 +16,7 @@ import java.util.HashMap;
 @Component
 public class ShipOrderMessageTemplate extends MessageTemplate{
 
-    ShipOrderMessageTemplate(AccountsService accountsService, OrdersService ordersService) {
+    public ShipOrderMessageTemplate(AccountsService accountsService, OrdersService ordersService) {
         super(accountsService, ordersService);
         String subject = "Order #%s started shipping";
         String message = "Dear %s, your order #%s is on the way. The destination is %s.";
@@ -38,8 +38,8 @@ public class ShipOrderMessageTemplate extends MessageTemplate{
         this.setLanguageToMessageMap(languageToMessageMap);
     }
     @Override
-    public Notification getNotification(String username, String orderId, Language language, NotificationChannel channel) {
-        if (!this.isValidNotificationData(username, orderId, channel)) {
+    public Notification getNotification(String username, String orderId, Language language) {
+        if (!this.isValidNotificationData(username, orderId)) {
             return null;
         }
         Account account = accountsService.getAccount(username);
@@ -48,7 +48,7 @@ public class ShipOrderMessageTemplate extends MessageTemplate{
         String message = String.format(this.getLanguageToMessageMap().getOrDefault(language, this.message),
                                        account.getCustomerInfo().getName(),
                                        orderId, ((SimpleOrder) order).getLocation());
-        return new Notification(subject, message, account, channel, language, this);
+        return new Notification(subject, message, account, language, this);
     }
 
     @Override
