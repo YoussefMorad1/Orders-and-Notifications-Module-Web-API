@@ -15,9 +15,9 @@ public class AccountsController {
     private AccountsService accountsService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerAccount(@RequestBody Account account) {
+    public ResponseEntity<?> registerAccount(@RequestBody Account account) {
         if (accountsService.registerAccount(account)) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Account created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(accountsService.getAccount(account.getAccountCredentials().getUsername()));
         } else {
             return ResponseEntity.badRequest().body("Invalid account input (username already exists or balance is negative)");
         }
