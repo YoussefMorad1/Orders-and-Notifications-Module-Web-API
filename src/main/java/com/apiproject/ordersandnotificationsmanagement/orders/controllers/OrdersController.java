@@ -74,7 +74,7 @@ public class OrdersController {
         } else if (ordersService.cancelShipping(orderID)) {
             return ResponseEntity.ok("Order shipping is canceled successfully");
         } else {
-            return ResponseEntity.badRequest().body("Order shipping time is expired (only 24 hours allowed)");
+            return ResponseEntity.badRequest().body("Order shipping time is expired (only 2 minutes allowed)");
         }
     }
 }

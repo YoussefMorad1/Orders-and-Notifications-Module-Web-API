@@ -30,7 +30,7 @@ public class OrdersService {
     private final ProductsService productsService;
     private final AccountsRepo accountsService;
     private final NotificationsService notificationsService;
-    private final long maxDurationToCancelShipping = 1000 * 60L; // 1000 milliseconds * 60 seconds (1 minute)
+    private final long maxDurationToCancelShipping = 1000 * 60 * 2L; // 1000 milliseconds * (60 seconds) * (2 minute)
     private final double shippingFeeFactor = 0.1;
     private static int curOrderID = 0;
 
